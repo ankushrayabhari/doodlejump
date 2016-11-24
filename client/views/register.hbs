@@ -1,0 +1,17 @@
+<h2>Register as User</h2>
+
+{{#if errors }}
+  <ul>
+    {{#each errors }}
+      <li>{{ this.msg }}</li>
+    {{/each }}
+  </ul>
+{{/if }}
+
+<form action="/register" method="post">
+	Username:
+	<input type='text' name='username' maxlength='36' value='{{ info.username }}'><br>
+	Password:
+	<input type='password' name='password'><br>
+	<input type="submit"> <input type="reset">
+</form>

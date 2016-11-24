@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+	<head>
+		<title>DoodleJump</title>
+		<style>
+			body {
+				width: 100%; 
+				text-align: center;
+			}
+
+			canvas {
+				border: 1px solid black;
+				display: inline;
+			}
+
+			nav {
+				width: 100%;
+			}
+			nav ul {
+				width: 50%;
+				margin: 0 auto;
+				text-align: center;
+			}
+			nav ul li {
+				display: inline-block;
+				width: 20%;
+				border: 1px solid red;
+			}
+		</style>
+	</head>
+
+	<body>
+		{{{body}}}
+
+		<nav>
+			<ul>
+				<li><a href="/">Game</a></li>
+				<li><a href="/profile">{{ user.username }}</a></li>
+				<li><a href="/logout">Logout</a></li>
+			</ul>
+		</nav>
+	</body>
+</html>
