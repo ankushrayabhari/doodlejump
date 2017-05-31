@@ -35,8 +35,6 @@ app.set('views', __dirname+'/../client/views');
 app.engine('hbs', handlebars.engine);
 app.set('view engine', 'hbs');
 
-mongoose.connect('mongodb://localhost/doodle');
-
 passport.serializeUser(function(user, done) {
     console.log("serialize", user.username);
     done(null, user.username);

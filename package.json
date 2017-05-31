@@ -4,6 +4,7 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
+    "start": "node server/server.js",
     "startDatabase": "mongod --dbpath data"
   },
   "author": "",

@@ -1,6 +1,5 @@
 var PIXELSPERMETER = 20;
 
-
 function drawAxes(ctx) {
     ctx.strokeStyle = 'rgb(192,0,0)';
     ctx.beginPath();
