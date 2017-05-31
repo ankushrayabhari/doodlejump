@@ -7,62 +7,90 @@ ctx.scale(1, -1);
 var gravity = new Box2D.b2Vec2(0.0, -10.0);
 var world = new Box2D.b2World(gravity);
 
-var fallingObject = new Box2D.b2BodyDef();
-fallingObject.set_fixedRotation(true);
-fallingObject.set_type(Box2D.b2_dynamicBody);
-var verts = [];
-verts.push( new Box2D.b2Vec2( 12,12 ) );
-verts.push( new Box2D.b2Vec2( 12,15 ) );
-verts.push( new Box2D.b2Vec2( 15, 15 ) );
-verts.push( new Box2D.b2Vec2( 15, 12 ) );
-var shape = createPolygonShape( verts );
-var fixtureDef = new Box2D.b2FixtureDef();
-fixtureDef.set_density( 2.5 );
-fixtureDef.set_friction( 0.6 );
-fixtureDef.set_restitution( 1 );
-fixtureDef.set_shape( shape );
-var Player = world.CreateBody(fallingObject);
-Player.CreateFixture(fixtureDef);
+var listener = new Box2D.JSContactListener();
+
+
+listener.BeginContact = function(contactPtr) {
+	var contact = Box2D.wrapPointer( contactPtr, Box2D.b2Contact );
+	var fixA = contact.GetFixtureA();
+	var fixB = contact.GetFixtureB();
+
+	if(fixA.GetUserData() == 1 && fixB.GetUserData() == 2) {
+		var platformBody = fixB.GetBody();
+		var playerBody = fixA.GetBody();
+
+		var manifold = new Box2D.b2WorldManifold;
+		contact.GetWorldManifold(manifold);
+
+		var points = contact.GetManifold().get_pointCount();
+
+		for(var i = 0; i < points; i++) {
+			var pointVel = playerBody.GetLinearVelocityFromWorldPoint(manifold.get_points(i));
+			if(pointVel.get_y() < 0) return;
+		}
+
+		contact.SetEnabled(false);
+	}
+	else if(fixB.GetUserData() == 1 && fixA.GetUserData() == 2) {
+		var platformBody = fixA.GetBody();
+		var playerBody = fixB.GetBody();
+
+		var manifold = new Box2D.b2WorldManifold;
+		contact.GetWorldManifold(manifold);
+		
+		var points = contact.GetManifold().get_pointCount();
+
+		for(var i = 0; i < points; i++) {
+			var pointVel = playerBody.GetLinearVelocityFromWorldPoint(manifold.get_points(i));
+			if(pointVel.get_y() < 0) return;
+		}
+
+		contact.SetEnabled(false);
+	}
+}
+
+listener.EndContact = function(contactPtr) {
+	var contact = Box2D.wrapPointer( contactPtr, Box2D.b2Contact );
+	contact.SetEnabled(true);
+}
+
+listener.PostSolve = function(contactPtr) {
+	var contact = Box2D.wrapPointer( contactPtr, Box2D.b2Contact );
+	var fixA = contact.GetFixtureA();
+	var fixB = contact.GetFixtureB();
+	if(fixA.GetUserData() == 1 && fixB.GetUserData() == 2) {
+		Player.jump();
+	}
+	else if(fixB.GetUserData() == 1 && fixA.GetUserData() == 2) {
+		Player.jump();
+	}
+}
+
+listener.PreSolve = function(contact) {}
+
+world.SetContactListener(listener);
+
+Player.init();
 
 var ground = new Box2D.b2BodyDef();
 var shape1 = new Box2D.b2EdgeShape();
-shape1.Set(new Box2D.b2Vec2(0.0, 5.0), new Box2D.b2Vec2(25.0, 5.0));
+shape1.Set(new Box2D.b2Vec2(0.0, 2.0), new Box2D.b2Vec2(25.0, 2.0));
 world.CreateBody(ground).CreateFixture(shape1, 0.0);
 
 debugDraw = getCanvasDebugDraw();
 debugDraw.SetFlags(0x0001);
 world.SetDebugDraw(debugDraw);
 
-var force = new Box2D.b2Vec2(0.0, 0.0);
+var lol = new Platform(5,10);
 
 function gameLoop() {
 	world.Step(1/60, 10, 10);
 	world.ClearForces();
-
-	var position = Player.GetPosition();
 	
-	if(position.get_x() < -15) Player.SetTransform(new Box2D.b2Vec2(12, position.get_y()), 0);
-	if(position.get_x() > 13) Player.SetTransform(new Box2D.b2Vec2(-14, position.get_y()), 0);
-
-	var force = new Box2D.b2Vec2(0.0, 0.0);
-
-	if(Input.isKeyLeft()) {
-		force.set_x(-500);
-	}
-
-	if(Input.isKeyRight()) {
-		force.set_x(500);
-	}
-
-	Player.ApplyForceToCenter(force, true);
-
-
-
-
-
+	Player.update();
+	lol.update();
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     ctx.fillStyle = 'rgb(255,255,0)';
     world.DrawDebugData();
 

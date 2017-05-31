@@ -117,17 +117,3 @@ function getCanvasDebugDraw() {
 
     return debugDraw;
 }
-
-function createPolygonShape(vertices) {
-    var shape = new Box2D.b2PolygonShape();            
-    var buffer = Box2D.allocate(vertices.length * 8, 'float', Box2D.ALLOC_STACK);
-    var offset = 0;
-    for (var i=0;i<vertices.length;i++) {
-        Box2D.setValue(buffer+(offset), vertices[i].get_x(), 'float'); // x
-        Box2D.setValue(buffer+(offset+4), vertices[i].get_y(), 'float'); // y
-        offset += 8;
-    }            
-    var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
-    shape.Set(ptr_wrapped, vertices.length);
-    return shape;
-}
