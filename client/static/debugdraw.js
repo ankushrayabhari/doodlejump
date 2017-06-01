@@ -25,7 +25,8 @@ function setColorFromDebugDrawCallback(color) {
 
 function drawSegment(vert1, vert2) {
     var vert1V = Box2D.wrapPointer(vert1, Box2D.b2Vec2);
-    var vert2V = Box2D.wrapPointer(vert2, Box2D.b2Vec2);                    
+    var vert2V = Box2D.wrapPointer(vert2, Box2D.b2Vec2);
+
     ctx.beginPath();
     ctx.moveTo(vert1V.get_x()*PIXELSPERMETER,vert1V.get_y()*PIXELSPERMETER);
     ctx.lineTo(vert2V.get_x()*PIXELSPERMETER,vert2V.get_y()*PIXELSPERMETER);

@@ -77,22 +77,40 @@ var shape1 = new Box2D.b2EdgeShape();
 shape1.Set(new Box2D.b2Vec2(0.0, 2.0), new Box2D.b2Vec2(25.0, 2.0));
 world.CreateBody(ground).CreateFixture(shape1, 0.0);
 
+var Camera = {
+	y: 0
+};
+
+
+
+
 debugDraw = getCanvasDebugDraw();
 debugDraw.SetFlags(0x0001);
 world.SetDebugDraw(debugDraw);
 
-var lol = new Platform(5,10);
+var platforms = [];
+platforms.push(new Platform(5,10));
 
 function gameLoop() {
 	world.Step(1/60, 10, 10);
 	world.ClearForces();
 	
 	Player.update();
-	lol.update();
+
+	for(var i = 0; i < platforms.length; i++) {
+		platforms[i].update();
+	}
+	
+
+	Camera.y = -Player.body.GetPosition().get_y()+10;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'rgb(255,255,0)';
+
+    ctx.save();
+    ctx.translate(0, Camera.y*20);
     world.DrawDebugData();
+    ctx.restore();
 
 	requestAnimationFrame(gameLoop);
 }

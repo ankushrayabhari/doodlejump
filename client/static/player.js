@@ -18,7 +18,7 @@ var Player = {
 		this.body.SetLinearDamping(0.1);
 	},
 	jump: function() {
-		var force = new Box2D.b2Vec2(0.0, 100.0);
+		var force = new Box2D.b2Vec2(0.0, 150.0);
 		this.body.ApplyLinearImpulse(force, this.body.GetWorldCenter());
 	},
 	update: function() {
